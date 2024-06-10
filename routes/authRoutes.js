@@ -8,10 +8,17 @@ router.post(
   "/login",
   (req, res, next) => {
     try {
-      // TODO: Implement login action (get the user if it exist with entered credentials)
-      res.data = data;
+      const userData = authService.login(req.body);
+      if (!userData) {
+        const error = new Error("Login failed. Check your credentials.");
+        error.code = 401;
+        error.status = "Unauthorized";
+        throw error;
+      }
+      res.data = userData;
+      res.status(200).json(userData);
     } catch (err) {
-      res.err = err;
+      next(err);
     } finally {
       next();
     }
@@ -20,3 +27,5 @@ router.post(
 );
 
 export { router };
+
+// TODO: Implement login action (get the user if it exist with entered credentials)
